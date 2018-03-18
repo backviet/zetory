@@ -31,13 +31,6 @@ class _HomePageState extends State<HomePage> with AbsLoader<List<AlbumInfo>, voi
 
   int get _count => _albums == null ? 0 : _albums.length;
 
-  Future<Null> _handleRefresh() {
-    final Completer<Null> completer = new Completer<Null>();
-    return completer.future.then((_) {
-      onLoadStarted(null);
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -61,16 +54,23 @@ class _HomePageState extends State<HomePage> with AbsLoader<List<AlbumInfo>, voi
     if (!_isLoading) {
       return new Scaffold(
           backgroundColor: Colors.white,
-          body: new RefreshIndicator(
-            key: _refreshIndicatorKey,
-            onRefresh: _handleRefresh,
-            child: new ListView.builder(
-                key: new PageStorageKey('albums'),
-                itemCount: _count,
-                itemBuilder: (BuildContext context, int position) {
-                  return new _AlbumItemWidget(album: _albums[position]);
-                })
-          ),
+          body: new ListView.builder(
+              key: new PageStorageKey('albums'),
+              itemCount: _count,
+              itemBuilder: (BuildContext context, int position) {
+                return new _AlbumItemWidget(album: _albums[position]);
+              })
+
+//          new RefreshIndicator(
+//            key: _refreshIndicatorKey,
+//            onRefresh: _handleRefresh,
+//            child: new ListView.builder(
+//                key: new PageStorageKey('albums'),
+//                itemCount: _count,
+//                itemBuilder: (BuildContext context, int position) {
+//                  return new _AlbumItemWidget(album: _albums[position]);
+//                })
+//          ),
       );
     } else {
       return new Scaffold(
@@ -94,6 +94,7 @@ class _HomePageState extends State<HomePage> with AbsLoader<List<AlbumInfo>, voi
   void onLoadStarted(void params) {
     setState(() {
       _isLoading = true;
+      _albums = null;
     });
     _getAlbumsPresenter.onLoadStarted(params);
   }
@@ -110,6 +111,14 @@ class _HomePageState extends State<HomePage> with AbsLoader<List<AlbumInfo>, voi
     setState(() {
       _albums = result;
       _isLoading = false;
+      _refreshIndicatorKey.currentState?.show();
+    });
+  }
+
+  Future<Null> _handleRefresh() {
+    final Completer<Null> completer = new Completer<Null>();
+    return completer.future.then((_) {
+      onLoadStarted(null);
     });
   }
 
@@ -151,8 +160,6 @@ class _AlbumItemWidget extends StatelessWidget {
       : super(key: key);
 
   final AlbumInfo album;
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -311,6 +318,7 @@ class _AlbumItemMediaWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<MediaInfo> medias = new List.from(this.medias);
     final Size screenSize = MediaQuery.of(context).size;
     final double maxWidth = screenSize.width;
     final double maxHeight = maxWidth;

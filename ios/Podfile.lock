@@ -1,0 +1,28 @@
+PODS:
+  - Flutter (1.0.0)
+  - image_picker (0.0.1):
+    - Flutter
+  - path_provider (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Pods/.symlinks/flutter/ios`)
+  - image_picker (from `Pods/.symlinks/plugins/image_picker-0.3.1/ios`)
+  - path_provider (from `Pods/.symlinks/plugins/path_provider-0.4.0/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Pods/.symlinks/flutter/ios
+  image_picker:
+    :path: Pods/.symlinks/plugins/image_picker-0.3.1/ios
+  path_provider:
+    :path: Pods/.symlinks/plugins/path_provider-0.4.0/ios
+
+SPEC CHECKSUMS:
+  Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
+  image_picker: ee00aab0487cedc80a304085219503cc6d0f2e22
+  path_provider: 09407919825bfe3c2deae39453b7a5b44f467873
+
+PODFILE CHECKSUM: 793ca17cc5488c2bdeb7f2f95b973a070492cf02
+
+COCOAPODS: 1.4.0

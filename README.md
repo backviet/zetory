@@ -1,6 +1,12 @@
-# my_album
+# MyAlbum
 
-MyAlbum Flutter project.
+MyAlbum Flutter project. Using Clean Achitecture for this project.
+
+
+## GIF: Demo App
+
+<img width=200em src="https://media.giphy.com/media/xlqz1eMNS58xiLwPqK/giphy.gif?raw=true">
+
 
 ## Getting Started
 
