@@ -4,9 +4,9 @@ MyAlbum Flutter project. Using Clean Achitecture for this project.
 
 
 ## GIF: Demo App
-
-<img width=200em src="https://media.giphy.com/media/xlqz1eMNS58xiLwPqK/giphy.gif?raw=true">
-
+<div>
+<img width=200em src="https://github.com/backviet01/MyAlbum/tree/master/preview.gif?raw=true">
+</div>
 
 ## Getting Started
 
