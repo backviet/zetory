@@ -34,8 +34,7 @@ For help getting started with Flutter, view flutter online
 #### 2. Clone the repo
 
 ```sh
-$ git clone git@github.com:backviet01/MyAlbum.git
-$ rename 'MyAlbum' to 'my_album' if need
+$ git clone git@github.com:backviet01/my_album.git
 $ cd my_album/
 ```
 #### 3. Run the app
