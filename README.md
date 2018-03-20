@@ -17,7 +17,7 @@ Zetory project - Power by Flutter
 
 ## Preview
 
-![ios-demo](./preview.gif)
+![ios-demo](./pub/preview.gif)
 
 ## Dependencies
 
