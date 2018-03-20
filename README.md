@@ -1,6 +1,8 @@
-# MyAlbum
+# Zetory
 
-This is a template for a Album project, power by Flutter:
+![zetory](./pub/logo.png)
+
+Zetory project - Power by Flutter
 
 ## Features
 - Interaction with network
@@ -34,8 +36,8 @@ For help getting started with Flutter, view flutter online
 #### 2. Clone the repo
 
 ```sh
-$ git clone git@github.com:backviet01/my_album.git
-$ cd my_album/
+$ git clone git@github.com:backviet/zetory.git
+$ cd zetory/
 ```
 #### 3. Run the app
 
@@ -53,8 +55,8 @@ fatal error: 'path_provider/PathProviderPlugin.h' file not found
 ```
 Solution:
 - first: Run project in a iOS device
-- Copy [ImagePickerPlugin.h](https://github.com/flutter/plugins/blob/master/packages/image_picker/ios/Classes/ImagePickerPlugin.h) into ../path/to/my_album/build/ios/Debug-iphones/image_picker/image_picker.framework/Header
-- Copy [PathProviderPlugin.h](https://github.com/flutter/plugins/blob/master/packages/path_provider/ios/Classes/PathProviderPlugin.h) into ../path/to/my_album/build/ios/Debug-iphones/path_provider/pat_provider.framework/Header
+- Copy [ImagePickerPlugin.h](https://github.com/flutter/plugins/blob/master/packages/image_picker/ios/Classes/ImagePickerPlugin.h) into ../path/to/zetory/build/ios/Debug-iphones/image_picker/image_picker.framework/Header
+- Copy [PathProviderPlugin.h](https://github.com/flutter/plugins/blob/master/packages/path_provider/ios/Classes/PathProviderPlugin.h) into ../path/to/zetory/build/ios/Debug-iphones/path_provider/pat_provider.framework/Header
 
 ## License
 ```

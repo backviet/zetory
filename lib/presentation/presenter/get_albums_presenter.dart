@@ -1,5 +1,5 @@
 import 'presenter.dart';
-import 'package:my_album/domain/domain.dart' show Album, AbsAlbumRepository, ListWrapper, UseCase, AbsObserver, GetAlbums;
+import 'package:zetory/domain/domain.dart' show Album, AbsAlbumRepository, ListWrapper, UseCase, AbsObserver, GetAlbums;
 import '../view_model/view_model.dart' show AlbumInfo, AlbumViewModelWrapper;
 
 class GetAlbumsPresenter extends AbsLoaderPresenter<List<Album>, List<AlbumInfo>, void> {

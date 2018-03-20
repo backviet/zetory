@@ -1,5 +1,5 @@
 import '../view_model.dart';
-import 'package:my_album/domain/domain.dart';
+import 'package:zetory/domain/domain.dart';
 
 class ViewModelWrapperFactory {
   static final ViewModelWrapperFactory _instance = new ViewModelWrapperFactory._internal();

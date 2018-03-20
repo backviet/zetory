@@ -17,4 +17,4 @@
 import 'package:flutter/material.dart';
 import 'app.dart';
 
-void main() => runApp(new MyAlbumApp());
+void main() => runApp(new ZetoryApp());

@@ -5,7 +5,7 @@ import 'connection.dart';
 import 'dart:convert';
 
 final String kApiBaseUrl = "gist.githubusercontent.com";
-final String kAlbumListUrl = "backviet01/92342a9d8cb633061e64aa4ed6653808/raw/2e25245dc88b5555d711788a261b887a32590094/albums.json";
+final String kAlbumListUrl = "backviet/92342a9d8cb633061e64aa4ed6653808/raw/2e25245dc88b5555d711788a261b887a32590094/albums.json";
 
 abstract class AbsNetApi<T> {
   Future<T> fetch();

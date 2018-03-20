@@ -1,4 +1,4 @@
-package com.backviet.myalbum;
+package com.zegome.zetory;
 
 import android.os.Bundle;
 

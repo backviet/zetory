@@ -9,10 +9,10 @@ import 'dart:async';
 import '../view_model/view_model.dart';
 import 'photo_viewer.dart';
 
-import 'package:my_album/presentation/ui/album_viewer.dart';
+import 'package:zetory/presentation/ui/album_viewer.dart';
 import '../presenter/presenter.dart';
 
-import 'package:my_album/data/data.dart' show ProductFlavor;
+import 'package:zetory/data/data.dart' show ProductFlavor;
 
 const double _kPadding = 4.0;
 

@@ -1,5 +1,5 @@
 import '../entity.dart';
-import 'package:my_album/domain/domain.dart';
+import 'package:zetory/domain/domain.dart';
 
 class EtityWrapperFactory {
   static final EtityWrapperFactory _instance = new EtityWrapperFactory._internal();

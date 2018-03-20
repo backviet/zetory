@@ -17,7 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
-import 'package:my_album/presentation/ui/home.dart';
+import 'package:zetory/presentation/ui/home.dart';
 
 final ThemeData _kGalleryLightTheme = new ThemeData(
   brightness: Brightness.light,
@@ -29,13 +29,13 @@ final ThemeData _kGalleryDarkTheme = new ThemeData(
   primarySwatch: Colors.blue,
 );
 
-class MyAlbumApp extends StatefulWidget {
+class ZetoryApp extends StatefulWidget {
 
   @override
-  _MyAlbumAppState createState() => new _MyAlbumAppState();
+  _ZetoryAppState createState() => new _ZetoryAppState();
 }
 
-class _MyAlbumAppState extends State<MyAlbumApp>
+class _ZetoryAppState extends State<ZetoryApp>
     with TickerProviderStateMixin {
   bool _useLightTheme = true;
 
@@ -43,7 +43,7 @@ class _MyAlbumAppState extends State<MyAlbumApp>
   Widget build(BuildContext context) {
     timeDilation = 1.0;
     return new MaterialApp(
-      title: 'MyAlbum',
+      title: 'Zetory',
       color: Colors.grey,
       theme: (_useLightTheme ? _kGalleryLightTheme : _kGalleryDarkTheme).copyWith(platform: TargetPlatform.iOS),
       home: new HomePage(),

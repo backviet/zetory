@@ -1,7 +1,7 @@
 import 'presenter.dart';
-import 'package:my_album/data/data.dart';
+import 'package:zetory/data/data.dart';
 import '../view_model/view_model.dart';
-import 'package:my_album/domain/domain.dart' show GetAlbums;
+import 'package:zetory/domain/domain.dart' show GetAlbums;
 
 class PresenterFactory {
 
