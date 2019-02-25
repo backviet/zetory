@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import '../view_model/view_model.dart';
+import 'package:zetory/presentation/view_model/view_model.dart';
 import 'photo_viewer.dart';
 
 const double _kPadding = 4.0;
@@ -35,18 +35,18 @@ class _AlbumViewerState extends State<AlbumViewer> {
     final Size screenSize = MediaQuery.of(context).size;
     final double maxHeight = screenSize.width / 2;
 
-    final Widget header = new Container(
-      child: new Column(
+    final Widget header = Container(
+      child: Column(
         children: <Widget>[
-          new Image.network(
+          Image.network(
             widget.album.medias[0].image,
             width: screenSize.width,
             height: maxHeight,
             fit: BoxFit.cover,
           ),
-          new Padding(
+          Padding(
             padding: const EdgeInsets.only(top: _kPadding),
-            child: new Container(
+            child: Container(
               width: _kAvartarSize,
               height: _kAvartarSize,
               decoration: new BoxDecoration(
@@ -57,12 +57,12 @@ class _AlbumViewerState extends State<AlbumViewer> {
               ),
             ),
           ),
-          new Container(
+          Container(
             padding: const EdgeInsets.all(_kPadding),
-            child: new Text(
+            child: Text(
               "My Album",
               textAlign: TextAlign.center,
-              style: new TextStyle(
+              style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.black54,
                   fontWeight: FontWeight.bold
@@ -87,10 +87,9 @@ class _AlbumViewerState extends State<AlbumViewer> {
       backgroundColor: Colors.white,
       body: new SafeArea(
         top: false,
-        child: new Stack(
+        child: Stack(
           children: <Widget>[
-
-            new CustomScrollView(
+            CustomScrollView(
               key: new PageStorageKey(_kKeyNameList),
               slivers: <Widget>[
                 new SliverList(
@@ -100,7 +99,7 @@ class _AlbumViewerState extends State<AlbumViewer> {
                 ),
               ],
             ),
-            new SafeArea(
+            SafeArea(
                 child: const BackButton(color: Colors.black,)
             ),
 //            const BackButton(),
@@ -275,5 +274,4 @@ class _AlbumViewerState extends State<AlbumViewer> {
         )
     );
   }
-
 }

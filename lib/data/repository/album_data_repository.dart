@@ -1,16 +1,15 @@
 import 'dart:async';
 
 import 'data_source.dart' show AlbumDataStoreFactory;
-import '../entity/entity.dart' show AlbumEntity, EtityWrapperFactory;
-import 'package:zetory/domain/domain.dart'
-    show AbsAlbumRepository, Album, ListWrapper;
+import 'package:zetory/data/entity/entity.dart' show AlbumEntity, EntityWrapperFactory;
+import 'package:zetory/domain/domain.dart' show AbsAlbumRepository, Album, ListWrapper;
 import 'package:zetory/data/data.dart' show ProductFlavor;
 
 class AlbumDataRepository extends AbsAlbumRepository {
   AlbumDataRepository({ProductFlavor productFlavor = ProductFlavor.mock})
       : this._productFlavor = productFlavor,
         _dataStoreFactory = new AlbumDataStoreFactory(),
-        _entityWrapper = new EtityWrapperFactory().albumListWrapper;
+        _entityWrapper = new EntityWrapperFactory().albumListWrapper;
 
   final ProductFlavor _productFlavor;
   final AlbumDataStoreFactory _dataStoreFactory;

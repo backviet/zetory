@@ -15,6 +15,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'app.dart';
+import 'package:zetory/app.dart';
 
 void main() => runApp(new ZetoryApp());

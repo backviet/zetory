@@ -39,7 +39,7 @@ class AlbumCacheImpl extends AlbumCache {
     if (json == null) {
       return null;
     }
-    Map<String, dynamic> albumsMap = JSON.decode(json);
+    Map<String, dynamic> albumsMap = jsonDecode(json);
     _albumsMap = new Map.from(albumsMap);
     return AlbumEntity.listFromJson(albumsMap);
   }
@@ -50,7 +50,7 @@ class AlbumCacheImpl extends AlbumCache {
       return false;
     }
     _albumsMap = {'albums': albums, _kLastCache: new DateTime.now().millisecondsSinceEpoch};
-    final String json = JSON.encode(_albumsMap);
+    final String json = jsonEncode(_albumsMap);
     return await _preferenceManager.write(_kFileName, json);
   }
 

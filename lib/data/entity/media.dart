@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'media.g.dart';
 
 @JsonSerializable()
-class MediaEntity extends Object with _$MediaEntitySerializerMixin {
+class MediaEntity {
   MediaEntity({
     String type,
     @required this.showAt,

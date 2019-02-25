@@ -6,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'album.g.dart';
 
 @JsonSerializable()
-class AlbumEntity extends Object with _$AlbumEntitySerializerMixin {
+class AlbumEntity {
   AlbumEntity({
     @required this.name,
     @required this.caption,
@@ -26,7 +26,11 @@ class AlbumEntity extends Object with _$AlbumEntitySerializerMixin {
   @override
   String toString() {
     return '''
-      name: ${name}, caption: ${caption}, icon: ${icon}, created: ${created}, medias: ${medias.map((media) => media.toString())}
+      name: ${name}, 
+      caption: ${caption}, 
+      icon: ${icon}, 
+      created: ${created}, 
+      medias: ${medias.map((media) => media.toString())}
     ''';
   }
 

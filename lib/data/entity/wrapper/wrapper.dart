@@ -1,20 +1,22 @@
-import '../entity.dart';
+import 'package:zetory/data/entity/entity.dart';
 import 'package:zetory/domain/domain.dart';
 
-class EtityWrapperFactory {
-  static final EtityWrapperFactory _instance = new EtityWrapperFactory._internal();
+class EntityWrapperFactory {
+  static final EntityWrapperFactory _instance = new EntityWrapperFactory._internal();
 
-  factory EtityWrapperFactory() {
+  factory EntityWrapperFactory() {
     return _instance;
   }
 
-  EtityWrapperFactory._internal() {
+  EntityWrapperFactory._internal() {
     this._mediaEntityWrapper = new MediaEntityWrapper();
     this._mediaListWrapper = new ListWrapper(_mediaEntityWrapper);
     this._albumEntityWrapper = new AlbumEntityWrapper(_mediaListWrapper);
     this._albumListWrapper = new ListWrapper(_albumEntityWrapper);
+    this._githubUserWrapper = GithubUserWrapper();
   }
 
+  GithubUserWrapper get githubUserWrapper => _githubUserWrapper;
   AlbumEntityWrapper get albumEntityWrapper => _albumEntityWrapper;
   MediaEntityWrapper get mediaEntityWrapper => _mediaEntityWrapper;
   ListWrapper<MediaEntity, Media> get mediaListWrapper => _mediaListWrapper;
@@ -24,10 +26,11 @@ class EtityWrapperFactory {
   MediaEntityWrapper _mediaEntityWrapper;
   ListWrapper<MediaEntity, Media> _mediaListWrapper;
   ListWrapper<AlbumEntity, Album> _albumListWrapper;
+
+  GithubUserWrapper _githubUserWrapper;
 }
 
 class AlbumEntityWrapper extends AbsWrapper<AlbumEntity, Album> {
-
   AlbumEntityWrapper(this.mediaListWrapper) : assert(mediaListWrapper != null);
 
   final ListWrapper<MediaEntity, Media> mediaListWrapper;
@@ -38,7 +41,7 @@ class AlbumEntityWrapper extends AbsWrapper<AlbumEntity, Album> {
       return null;
     }
 
-    return new Album(
+    return Album(
       caption: input.caption,
       name: input.name,
       created: input.created,
@@ -46,18 +49,16 @@ class AlbumEntityWrapper extends AbsWrapper<AlbumEntity, Album> {
       medias: mediaListWrapper.transform(input.medias)
     );
   }
-
 }
 
 class MediaEntityWrapper extends AbsWrapper<MediaEntity, Media> {
-
   @override
   Media transform(MediaEntity input) {
     if (input == null) {
       return null;
     }
 
-    return new Media(
+    return Media(
         type: input.type,
         showAt: input.showAt,
         image: input.image,
@@ -65,5 +66,23 @@ class MediaEntityWrapper extends AbsWrapper<MediaEntity, Media> {
         height: input.height
     );
   }
+}
 
+class GithubUserWrapper extends AbsWrapper<GithubUserEntity, GithubUser> {
+  @override
+  GithubUser transform(GithubUserEntity input) {
+    if (input == null) {
+      return null;
+    }
+
+    return GithubUser(
+      type: input.type,
+      login: input.login,
+      name: input.name,
+      location: input.location,
+      url: input.url,
+      avatarUrl: input.avatarUrl,
+      blog: input.blog,
+    );
+  }
 }

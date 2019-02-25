@@ -1,10 +1,9 @@
 import 'presenter.dart';
 import 'package:zetory/data/data.dart';
-import '../view_model/view_model.dart';
-import 'package:zetory/domain/domain.dart' show GetAlbums;
+import 'package:zetory/presentation/view_model/view_model.dart';
+import 'package:zetory/domain/domain.dart' show GetAlbums, GetGithubUser;
 
 class PresenterFactory {
-
   static final PresenterFactory _sInstance = new PresenterFactory._internal();
 
   factory PresenterFactory() {
@@ -12,14 +11,29 @@ class PresenterFactory {
   }
 
   GetAlbumsPresenter _getAlbumsPresenter;
+  GetUserInfoPresenter _getUserInfoPresenter;
 
   PresenterFactory._internal();
 
   GetAlbumsPresenter getAlbumsPresenter({ProductFlavor productFlavor = ProductFlavor.mock}) {
     if (_getAlbumsPresenter == null) {
-      _getAlbumsPresenter = new GetAlbumsPresenter(new GetAlbums(new AlbumDataRepository(productFlavor: productFlavor)), new ViewModelWrapperFactory().albumListWrapper);
+      _getAlbumsPresenter = GetAlbumsPresenter(
+          GetAlbums(AlbumDataRepository(productFlavor: productFlavor)),
+          ViewModelWrapperFactory().albumListWrapper
+      );
     }
 
     return _getAlbumsPresenter;
+  }
+
+  GetUserInfoPresenter getUserInfoPresenter() {
+    if (_getUserInfoPresenter == null) {
+      _getUserInfoPresenter = GetUserInfoPresenter(
+          GetGithubUser(GithubUserRepository()),
+          ViewModelWrapperFactory().githubUserWrapper
+      );
+    }
+
+    return _getUserInfoPresenter;
   }
 }

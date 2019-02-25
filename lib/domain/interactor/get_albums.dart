@@ -1,18 +1,18 @@
 import 'dart:async';
 
 import 'usecase.dart';
-import '../models/model.dart' show Album;
+import 'package:zetory/domain/models/models.dart' show Album;
 
-import '../repository/repository.dart' show AbsAlbumRepository;
+import 'package:zetory/domain/repository/repository.dart' show AbsAlbumRepository;
 
-class GetAlbums extends UseCase<List<Album>, void> {
+class GetAlbums extends UseCase<List<Album>, Null> {
 
   GetAlbums(this._repository);
 
   final AbsAlbumRepository _repository;
 
   @override
-  Future<List<Album>> buildUseCase(void params) {
+  Future<List<Album>> buildUseCase(Null params) {
     return _repository.fetch();
   }
 }

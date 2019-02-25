@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
+import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 
-import 'package:zetory/presentation/ui/home.dart';
+import 'package:zetory/presentation/ui/navigation.dart';
 
 final ThemeData _kGalleryLightTheme = new ThemeData(
   brightness: Brightness.light,
@@ -37,19 +38,80 @@ class ZetoryApp extends StatefulWidget {
 
 class _ZetoryAppState extends State<ZetoryApp>
     with TickerProviderStateMixin {
-  bool _useLightTheme = true;
+
+  AppState _appState;
+
+
+  @override
+  void initState() {
+    if (_appState == null) {
+      _appState = new AppState();
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     timeDilation = 1.0;
+    return new StateContainer(
+      state: this._appState,
+      child: new _AppWidget(),
+    );
+
+  }
+}
+
+class AppState {
+  AppState({
+    bool useLightTheme = true,
+    TargetPlatform platform = TargetPlatform.iOS,
+
+  }) : this.useLightTheme = useLightTheme,
+        this.platform = platform;
+
+  final bool useLightTheme;
+  final TargetPlatform platform;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is AppState &&
+              runtimeType == other.runtimeType &&
+              useLightTheme == other.useLightTheme;
+
+}
+
+class StateContainer extends InheritedWidget {
+  StateContainer({
+    Key key,
+    @required this.state,
+    @required Widget child
+  }): super(key: key, child: child);
+
+  final AppState state;
+
+  static StateContainer of(BuildContext context) {
+    return context.inheritFromWidgetOfExactType(StateContainer);
+  }
+
+  @override
+  bool updateShouldNotify(StateContainer old) => state != old.state;
+}
+
+class _AppWidget extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    final container = StateContainer.of(context);
+    final state = container.state;
     return new MaterialApp(
       title: 'Zetory',
       color: Colors.grey,
-      theme: (_useLightTheme ? _kGalleryLightTheme : _kGalleryDarkTheme).copyWith(platform: TargetPlatform.iOS),
-      home: new HomePage(),
+      theme: (state.useLightTheme ? _kGalleryLightTheme : _kGalleryDarkTheme).copyWith(platform: state.platform),
+      home: AppNavigation(),
       showPerformanceOverlay: false,
     );
-
   }
 }
 

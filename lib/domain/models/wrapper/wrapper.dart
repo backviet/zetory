@@ -20,5 +20,4 @@ class ListWrapper<In, Out> extends AbsWrapper<List<In>, List<Out>> {
     }
     return rets;
   }
-
 }

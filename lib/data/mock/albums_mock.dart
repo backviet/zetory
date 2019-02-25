@@ -20,7 +20,7 @@ class AlbumMock extends AbsAlbumMock {
   Future<List<AlbumEntity>> get() async {
     final mockData = await rootBundle.loadString(_kFileDir);
 
-    final Map<String, dynamic> albumsMap = JSON.decode(mockData);
+    final Map<String, dynamic> albumsMap = jsonDecode(mockData);
     if (albumsMap == null) {
       return null;
     }

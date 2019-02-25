@@ -1,4 +1,4 @@
-export 'models/model.dart';
+export 'models/models.dart';
 export 'exception/exception.dart';
 export 'executor/executor.dart';
 export 'repository/repository.dart';

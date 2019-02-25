@@ -2,162 +2,176 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/rendering.dart';
-import 'dart:math';
+import 'dart:math' as math;
 import 'dart:core';
 import 'dart:async';
 
-import '../view_model/view_model.dart';
-import 'photo_viewer.dart';
+import 'package:zetory/presentation/view_model/view_model.dart';
+import 'package:zetory/presentation/ui/photo_viewer.dart';
 
 import 'package:zetory/presentation/ui/album_viewer.dart';
-import '../presenter/presenter.dart';
+import 'package:zetory/presentation/presenter/presenter.dart';
 
 import 'package:zetory/data/data.dart' show ProductFlavor;
+
+import 'package:zetory/presentation/ui/loading_widget.dart';
+import 'package:zetory/presentation/ui/images.dart' as images;
 
 const double _kPadding = 4.0;
 
 class HomePage extends StatefulWidget {
   @override
-  _HomePageState createState() => new _HomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with AbsLoader<List<AlbumInfo>, void> {
+class _HomePageState extends State<HomePage> with AbsLoader<List<AlbumInfo>, Null> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
+  final GetAlbumsPresenter _getAlbumsPresenter = PresenterFactory().getAlbumsPresenter(productFlavor: ProductFlavor.production);
 
-  GetAlbumsPresenter _getAlbumsPresenter;
-  bool _isLoading = false;
-  List<AlbumInfo> _albums;
-
-  int get _count => _albums == null ? 0 : _albums.length;
+  int get _count => _getAlbumsPresenter.presentableResult == null ? 0 : _getAlbumsPresenter.presentableResult.length;
 
   @override
   void initState() {
     super.initState();
-    _getAlbumsPresenter = new PresenterFactory().getAlbumsPresenter(productFlavor: ProductFlavor.production);
-    _albums = null;
-
     _getAlbumsPresenter.setUiView(this);
 
-    _isLoading = true;
-    _getAlbumsPresenter.onLoadStarted(null);
-
-//    new Future.delayed(new Duration(seconds: 5), () {
-//      setState(() {
-//        _getAlbumsPresenter.onLoadStarted(null);
-//      });
-//    });
+    if (_shouldReloadData()) {
+      _reloadData();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isLoading) {
-      return new Scaffold(
+    if (!_shouldReloadData()) {
+      final albums = _getAlbumsPresenter.presentableResult;
+      return Scaffold(
           backgroundColor: Colors.white,
-          body: new ListView.builder(
-              key: new PageStorageKey('albums'),
-              itemCount: _count,
-              itemBuilder: (BuildContext context, int position) {
-                return new _AlbumItemWidget(album: _albums[position]);
-              })
-
-//          new RefreshIndicator(
-//            key: _refreshIndicatorKey,
-//            onRefresh: _handleRefresh,
-//            child: new ListView.builder(
-//                key: new PageStorageKey('albums'),
-//                itemCount: _count,
-//                itemBuilder: (BuildContext context, int position) {
-//                  return new _AlbumItemWidget(album: _albums[position]);
-//                })
-//          ),
-      );
-    } else {
-      return new Scaffold(
-          backgroundColor: Colors.white,
-          body: new Center(
-            child: new CircularProgressIndicator(),
+          body: RefreshIndicator(
+            key: _refreshIndicatorKey,
+            onRefresh: _handleRefresh,
+            child: ListView.builder(
+                key: PageStorageKey('albums'),
+                itemCount: _count,
+                itemBuilder: (BuildContext context, int position) {
+                  return _AlbumItemWidget(album: albums[position]);
+                })
           ),
-      );
+          );
+    } else {
+      final Size screenSize = MediaQuery.of(context).size;
+      final double logoWidth = math.min(math.max(screenSize.width * 0.75, 300.0), 400.0);
+      final double factor = logoWidth / 300.0;
+
+      return Scaffold(
+          backgroundColor: Colors.white,
+          body: Stack(
+            children: <Widget>[
+              Container(
+                width: screenSize.width,
+                height: screenSize.height,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 60.0 * factor),
+                      child: _buildLogo(300.0 * factor, 125.0 * factor),
+                    ),
+                    LoadingWidget(
+                      shouldComplete: () => false,
+                      animationType: LoadingAnimationType.line,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ));
+//      return Scaffold(
+//        backgroundColor: Colors.white,
+//        body: Center(
+//          child: CircularProgressIndicator(),
+//        ),
+//      );
     }
   }
 
   @override
   void onLoadError(Exception e) {
     setState(() {
-      _isLoading = false;
       _showError(e);
     });
   }
 
   @override
-  void onLoadStarted(void params) {
+  void onLoadStarted(Null params) {
     setState(() {
-      _isLoading = true;
-      _albums = null;
+      _getAlbumsPresenter.onLoadStarted(params);
     });
-    _getAlbumsPresenter.onLoadStarted(params);
   }
 
   @override
   void onLoadStop() {
-    setState(() {
-      _isLoading = false;
-    });
+    setState(() {});
   }
 
   @override
   void onLoadSuccess(List<AlbumInfo> result) {
     setState(() {
-      _albums = result;
-      _isLoading = false;
-      _refreshIndicatorKey.currentState?.show();
+
+    });
+  }
+
+  Widget _buildLogo(double width, double height) {
+    return Container(
+      child: Image(
+        image: AssetImage(images.kLogo),
+        width: width,
+        height: height,
+      ),
+    );
+  }
+
+  bool _shouldReloadData() {
+    return !_getAlbumsPresenter.isLoading && 
+        (_getAlbumsPresenter.presentableResult == null || _getAlbumsPresenter.presentableResult.isEmpty);
+  }
+  
+  Future<Null> _reloadData() {
+    // delay for show loading for long time
+    // using this for test only
+    return Future.delayed(Duration(seconds: 3), () {
+      _getAlbumsPresenter.onLoadStarted(null);
     });
   }
 
   Future<Null> _handleRefresh() {
-    final Completer<Null> completer = new Completer<Null>();
-    return completer.future.then((_) {
-      onLoadStarted(null);
-    });
+    return _reloadData();
   }
 
-  void _showError(Exception e) {
+  _showError(Exception e) {
     showDialog(
-      context: context,
-      barrierDismissible: false,
-      child: new CupertinoAlertDialog(
-        title: new Text("Error"),
-        content: new Text("${e?.toString()}"),
-        actions: <Widget>[
-          new CupertinoDialogAction(
-              child: const Text('OK'),
-              isDestructiveAction: true,
-              onPressed: () { Navigator.pop(context, 'OK'); }
-          ),
-        ],
-      )
-//      child: new AlertDialog(
-//        title: new Text("Error"),
-//        content: new Text("${e?.toString()}"),
-//        actions: <Widget>[
-//          new FlatButton(
-//              child: const Text('OK'),
-//              onPressed: () { Navigator.pop(context); }
-//          )
-//        ],
-//      )
-    );
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+              title: Text("Error"),
+              content: Text("${e?.toString()}"),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                    child: const Text('OK'),
+                    isDestructiveAction: true,
+                    onPressed: () {
+                      Navigator.pop(context, 'OK');
+                    }),
+              ],
+            ));
   }
-
 }
 
 class _AlbumItemWidget extends StatelessWidget {
   const _AlbumItemWidget({
     @required this.album,
     Key key,
-  })
-      : super(key: key);
+  }) : super(key: key);
 
   final AlbumInfo album;
 
@@ -175,44 +189,36 @@ class _AlbumItemWidget extends StatelessWidget {
       }
     });
 
-    return new Column(
+    return Column(
       children: <Widget>[
-        new Padding(
+        Padding(
           padding: const EdgeInsets.all(_kPadding),
-          child: new Row(
+          child: Row(
             children: <Widget>[
-              new Padding(
+              Padding(
                 padding: const EdgeInsets.all(_kPadding),
-                child: new Container(
+                child: Container(
                   width: 60.0,
                   height: 60.0,
-                  decoration: new BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    image: new DecorationImage(
-                        image: new NetworkImage(this.album.icon),
-                        fit: BoxFit.cover),
+                    image: DecorationImage(image: NetworkImage(this.album.icon), fit: BoxFit.cover),
                   ),
                 ),
               ),
-              new Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 textDirection: TextDirection.ltr,
                 children: <Widget>[
-                  new Text(
+                  Text(
                     this.album.name,
-                    style: new TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold),
                   ),
-                  new Padding(
+                  Padding(
                     padding: const EdgeInsets.only(top: 2.0),
-                    child: new Text(
+                    child: Text(
                       '2018/03/06',
-                      style: new TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 12.0, color: Colors.grey, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -220,25 +226,20 @@ class _AlbumItemWidget extends StatelessWidget {
             ],
           ),
         ),
-        new Row(
+        Row(
           children: <Widget>[
-            new Padding(
+            Padding(
               padding: const EdgeInsets.only(left: _kPadding, right: _kPadding),
-              child: new Text(
+              child: Text(
                 this.album.caption,
-                style: new TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.black,
-                    fontWeight: FontWeight.normal),
+                style: TextStyle(fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.normal),
               ),
             ),
           ],
         ),
-        new Padding(
+        Padding(
             padding: const EdgeInsets.only(top: _kPadding),
-            child: new _AlbumItemMediaWidget(
-                album: this.album,
-                medias: new List<MediaInfo>.from(this.album.medias))),
+            child: _AlbumItemMediaWidget(album: this.album, medias: List<MediaInfo>.from(this.album.medias))),
       ],
     );
   }
@@ -254,49 +255,40 @@ class _AlbumItemMediaWidget extends StatelessWidget {
     return medias == null ? 0 : medias.length;
   }
 
-  double _calculateHeight(
-      {@required double width,
-      @required double height,
-      @required double targetWidth,
-      @required double maxHeight}) {
-    final targetHeight = min((height / width) * targetWidth, maxHeight);
+  double _calculateHeight({@required double width, @required double height, @required double targetWidth, @required double maxHeight}) {
+    final targetHeight = math.min((height / width) * targetWidth, maxHeight);
     return targetHeight;
   }
 
-  Widget _buildItem(String url, double width, double height,
-      {BoxFit fit = BoxFit.none, bool more = false}) {
+  Widget _buildItem(String url, double width, double height, {BoxFit fit = BoxFit.none, bool more = false}) {
     if (!more) {
-      return new Container(
-        child: new Image.network(
+      return Container(
+        child: Image.network(
           url,
           width: width,
           height: height,
           fit: fit,
         ),
-
       );
     } else {
-      return new Stack(
+      return Stack(
         children: <Widget>[
-          new Container(
-            child: new Image.network(
+          Container(
+            child: Image.network(
               url,
               width: width,
               height: height,
               fit: fit,
             ),
           ),
-          new Container(
+          Container(
               color: Colors.black54,
               width: width,
               height: height,
-              child: new Center(
-                child: new Text(
+              child: Center(
+                child: Text(
                   "+${medias.length}",
-                  style: new TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30.0,
-                      color: Colors.white),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30.0, color: Colors.white),
                 ),
               ))
         ],
@@ -305,20 +297,18 @@ class _AlbumItemMediaWidget extends StatelessWidget {
   }
 
   void _onMediaTap(BuildContext context, AlbumInfo album, int position) {
-    Navigator.push(context, new MaterialPageRoute<Null>(
-        builder: (BuildContext context) {
-          return new AlbumViewer(album: album);
-//          return new AlbumGridViewer(album: album);
-//          return new Scaffold(
-//            body: new AlbumListViewer(album: album, initPosition: position,)
+    Navigator.push(context, MaterialPageRoute<Null>(builder: (BuildContext context) {
+      return AlbumViewer(album: album);
+//          return AlbumGridViewer(album: album);
+//          return Scaffold(
+//            body: AlbumListViewer(album: album, initPosition: position,)
 //          );
-        }
-    ));
+    }));
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<MediaInfo> medias = new List.from(this.medias);
+    final List<MediaInfo> medias = List.from(this.medias);
     final Size screenSize = MediaQuery.of(context).size;
     final double maxWidth = screenSize.width;
     final double maxHeight = maxWidth;
@@ -326,46 +316,37 @@ class _AlbumItemMediaWidget extends StatelessWidget {
     if (count == 1) {
       final double width = maxWidth;
       final MediaInfo photo = medias[0];
-      return new SizedBox(
+      return SizedBox(
           width: width,
-          child: new Hero(
+          child: Hero(
             tag: photo.image,
-            child: new GestureDetector(
+            child: GestureDetector(
               onTap: () => PhotoViewer.onShowPhoto(context, photo),
               child: _buildItem(
-                  photo.image,
-                  width,
-                  _calculateHeight(
-                      width: photo.width,
-                      height: photo.height,
-                      targetWidth: width,
-                      maxHeight: maxHeight)),
+                  photo.image, width, _calculateHeight(width: photo.width, height: photo.height, targetWidth: width, maxHeight: maxHeight)),
             ),
-          )
-      );
+          ));
     } else if (count == 2) {
       final double width = maxWidth / 2 - _kPadding / 2;
 
-      return new SizedBox(
+      return SizedBox(
         width: maxWidth,
         height: maxHeight,
-        child: new Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              new InkWell(
-                  onTap: () => _onMediaTap(context, this.album, 0),
-                  child: new Container(
-                    padding: const EdgeInsets.only(right: _kPadding / 2),
-                    child: _buildItem(medias[0].image, width, maxHeight,
-                        fit: BoxFit.cover),
-                  )),
-              new InkWell(
-                  onTap: () => _onMediaTap(context, this.album, 1),
-                  child: new Container(
-                    padding: const EdgeInsets.only(left: _kPadding / 2),
-                    child: _buildItem(medias[1].image, width, maxHeight,
-                        fit: BoxFit.cover),
-                  )),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            InkWell(
+                onTap: () => _onMediaTap(context, this.album, 0),
+                child: Container(
+                  padding: const EdgeInsets.only(right: _kPadding / 2),
+                  child: _buildItem(medias[0].image, width, maxHeight, fit: BoxFit.cover),
+                )),
+            InkWell(
+                onTap: () => _onMediaTap(context, this.album, 1),
+                child: Container(
+                  padding: const EdgeInsets.only(left: _kPadding / 2),
+                  child: _buildItem(medias[1].image, width, maxHeight, fit: BoxFit.cover),
+                )),
           ],
         ),
       );
@@ -378,72 +359,58 @@ class _AlbumItemMediaWidget extends StatelessWidget {
       while (list2.length < 3 && medias.length > 0) {
         list2.add(medias.removeAt(0));
       }
-      final double footerWidth = (maxWidth  - (list2.length - 1) * _kPadding) / list2.length;
+      final double footerWidth = (maxWidth - (list2.length - 1) * _kPadding) / list2.length;
       final double footerHeight = footerWidth;
-      final double headerWidth = (maxWidth  - (list1.length - 1) * _kPadding) / list1.length;
-      final double headerHeight =
-          (list1.length == 1 ? maxHeight - footerHeight : headerWidth) -
-              _kPadding;
+      final double headerWidth = (maxWidth - (list1.length - 1) * _kPadding) / list1.length;
+      final double headerHeight = (list1.length == 1 ? maxHeight - footerHeight : headerWidth) - _kPadding;
       final double boxWidth = maxWidth;
       final double boxHeight = footerHeight + headerHeight + _kPadding;
 
-      final List<Widget> headerWidgets = <Widget> [
-        new InkWell(
-            onTap: () => _onMediaTap(context, this.album, 0),
-            child: _buildItem(list1[0].image, headerWidth, headerHeight, fit: BoxFit.cover)
-        ),
+      final List<Widget> headerWidgets = <Widget>[
+        InkWell(onTap: () => _onMediaTap(context, this.album, 0), child: _buildItem(list1[0].image, headerWidth, headerHeight, fit: BoxFit.cover)),
       ];
       if (list1.length == 2) {
-        headerWidgets.add(new InkWell(
+        headerWidgets.add(InkWell(
             onTap: () => _onMediaTap(context, this.album, 1),
-            child: new Container(
+            child: Container(
               padding: const EdgeInsets.only(left: _kPadding),
               child: _buildItem(list1[1].image, headerWidth, maxHeight, fit: BoxFit.cover),
-            )
-        ));
+            )));
       }
 
-      final List<Widget> footerWidgets = <Widget> [
-        new InkWell(
+      final List<Widget> footerWidgets = <Widget>[
+        InkWell(
             onTap: () => _onMediaTap(context, this.album, list1.length),
-            child: _buildItem(list2[0].image, footerWidth, footerHeight, fit: BoxFit.cover)
-        ),
+            child: _buildItem(list2[0].image, footerWidth, footerHeight, fit: BoxFit.cover)),
       ];
 
       for (int i = 1; i < list2.length; i++) {
         final int position = i + list1.length;
-        footerWidgets.add(new InkWell(
+        footerWidgets.add(InkWell(
             onTap: () => _onMediaTap(context, this.album, position),
-            child: new Container(
+            child: Container(
               padding: const EdgeInsets.only(left: _kPadding),
               child: _buildItem(list2[i].image, footerWidth, footerHeight, fit: BoxFit.cover, more: i == 2 && count > 5),
-            )
-        ));
+            )));
       }
 
-      return new SizedBox(
+      return SizedBox(
           width: boxWidth,
           height: boxHeight,
-          child: new Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              new SizedBox(
+              SizedBox(
                 height: headerHeight,
                 width: boxWidth,
-                child: new Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: headerWidgets
-                ),
+                child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: headerWidgets),
               ),
-              new Padding(
+              Padding(
                 padding: const EdgeInsets.only(top: _kPadding),
-                child: new SizedBox(
+                child: SizedBox(
                   height: footerHeight,
                   width: boxWidth,
-                  child: new Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: footerWidgets
-                  ),
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: footerWidgets),
                 ),
               )
             ],

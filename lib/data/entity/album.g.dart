@@ -3,31 +3,27 @@
 part of 'album.dart';
 
 // **************************************************************************
-// Generator: JsonSerializableGenerator
+// JsonSerializableGenerator
 // **************************************************************************
 
-AlbumEntity _$AlbumEntityFromJson(Map<String, dynamic> json) => new AlbumEntity(
-    name: json['name'] as String,
-    caption: json['caption'] as String,
-    icon: json['icon'] as String,
-    created: (json['created'] as num)?.toDouble(),
-    medias: (json['medias'] as List)
-        ?.map((e) => e == null
-            ? null
-            : new MediaEntity.fromJson(e as Map<String, dynamic>))
-        ?.toList());
-
-abstract class _$AlbumEntitySerializerMixin {
-  String get name;
-  String get caption;
-  String get icon;
-  double get created;
-  List<MediaEntity> get medias;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'name': name,
-        'caption': caption,
-        'icon': icon,
-        'created': created,
-        'medias': medias
-      };
+AlbumEntity _$AlbumEntityFromJson(Map<String, dynamic> json) {
+  return AlbumEntity(
+      name: json['name'] as String,
+      caption: json['caption'] as String,
+      icon: json['icon'] as String,
+      created: (json['created'] as num)?.toDouble(),
+      medias: (json['medias'] as List)
+          ?.map((e) => e == null
+              ? null
+              : MediaEntity.fromJson(e as Map<String, dynamic>))
+          ?.toList());
 }
+
+Map<String, dynamic> _$AlbumEntityToJson(AlbumEntity instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'caption': instance.caption,
+      'icon': instance.icon,
+      'created': instance.created,
+      'medias': instance.medias
+    };

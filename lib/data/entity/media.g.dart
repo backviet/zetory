@@ -3,27 +3,23 @@
 part of 'media.dart';
 
 // **************************************************************************
-// Generator: JsonSerializableGenerator
+// JsonSerializableGenerator
 // **************************************************************************
 
-MediaEntity _$MediaEntityFromJson(Map<String, dynamic> json) => new MediaEntity(
-    type: (json['type'] as String) ?? "photo",
-    showAt: json['show_at'] as double,
-    image: json['image'] as String,
-    width: (json['width'] as num)?.toDouble(),
-    height: (json['height'] as num)?.toDouble());
-
-abstract class _$MediaEntitySerializerMixin {
-  String get type;
-  double get showAt;
-  String get image;
-  double get width;
-  double get height;
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'type': type,
-        'show_at': showAt,
-        'image': image,
-        'width': width,
-        'height': height
-      };
+MediaEntity _$MediaEntityFromJson(Map<String, dynamic> json) {
+  return MediaEntity(
+      type: json['type'] as String,
+      showAt: (json['show_at'] as num)?.toDouble(),
+      image: json['image'] as String,
+      width: (json['width'] as num)?.toDouble(),
+      height: (json['height'] as num)?.toDouble());
 }
+
+Map<String, dynamic> _$MediaEntityToJson(MediaEntity instance) =>
+    <String, dynamic>{
+      'type': instance.type,
+      'show_at': instance.showAt,
+      'image': instance.image,
+      'width': instance.width,
+      'height': instance.height
+    };

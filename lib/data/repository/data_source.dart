@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import '../entity/entity.dart';
-import '../mock/albums_mock.dart';
-import '../net/net.dart';
-import '../cache/cache.dart';
+import 'package:zetory/data/entity/entity.dart';
+import 'package:zetory/data/mock/albums_mock.dart';
+import 'package:zetory/data/net/net.dart';
+import 'package:zetory/data/cache/cache.dart';
 
 enum ProductFlavor {
   mock, production
