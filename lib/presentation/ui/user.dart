@@ -24,7 +24,7 @@ class UserPageState extends State<UserPage> with AbsLoader<GithubUserViewModel, 
 
     _getUserInfoPresenter.setUiView(this);
     if (!_getUserInfoPresenter.isLoading && _getUserInfoPresenter.presentableResult == null) {
-      _getUserInfoPresenter.onLoadStarted(null);
+      _reloadData();
     }
   }
 
@@ -84,6 +84,14 @@ class UserPageState extends State<UserPage> with AbsLoader<GithubUserViewModel, 
     });
   }
 
+  Future<Null> _reloadData() {
+    // delay for show loading for long time
+    // using this for test only
+    return Future.delayed(Duration(seconds: 3), () {
+      _getUserInfoPresenter.onLoadStarted(null);
+    });
+  }
+
   _showError(Exception e) {
     showDialog(
         context: context,
@@ -116,7 +124,7 @@ class UserPageState extends State<UserPage> with AbsLoader<GithubUserViewModel, 
     if (_getUserInfoPresenter.isLoading || _getUserInfoPresenter.presentableResult == null) {
       return LoadingWidget(
         shouldComplete: () => false,
-        animationType: LoadingAnimationType.line,
+        animationType: LoadingAnimationType.oval_forward,
       );
     }
     final userViewModel = _getUserInfoPresenter.presentableResult;

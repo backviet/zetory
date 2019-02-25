@@ -10,7 +10,7 @@ abstract class AbsNetApi<T> {
 
 class AlbumNetApi extends AbsNetApi<List<AlbumEntity>> {
   static const String kApiBaseUrl = "gist.githubusercontent.com";
-  static const String kAlbumListUrl = "backviet/92342a9d8cb633061e64aa4ed6653808/raw/2e25245dc88b5555d711788a261b887a32590094/albums.json";
+  static const String kAlbumListUrl = "backviet/92342a9d8cb633061e64aa4ed6653808/raw/3842506330044a8235cf01036b37d1673346a801/albums.json";
 
   AlbumNetApi(this._cache) : _connection = new RestConnection();
 
